@@ -1,8 +1,4 @@
 // markdown template
-// function to get license info
-function getLicense(license) [
-    return `[![License](https://img.shields.io/badge/license-${license.})]`
-]
 
 // function to create markdown
 function markdown(answers) {
@@ -36,6 +32,7 @@ function markdown(answers) {
     ${answers.questionInstructions}
 
     ## License
+    ${answers.license}
 
     
     
