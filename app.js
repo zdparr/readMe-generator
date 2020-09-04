@@ -2,6 +2,7 @@
 const inquirer = require("inquirer")
 const fs = require("fs")
 const markdown = require("./assets/markdown.js")
+
 const userData = []
 
 // array of questions
@@ -37,7 +38,13 @@ const questions = [
         name: 'contributingInstructions'
     },
     {
+        type: 'input',
+        message: 'Enter an email for users to send questions to?',
+        name: 'questionInstructions'
+    },
+    {
         type: 'list',
+        name: 'license',
         message: 'What license do you want to use?',
         choices: [
             {
@@ -91,16 +98,21 @@ function questionPrompt() {
     return inquirer.prompt(questions)
 }
 
-function writeData(fileName, response) {
-    // delete any previous readme file
-    fs.unlink("README.md", (err) => { if (err) throw err })
-
+async function writeData(fileName, answers) {
+    // delete any previous readme file if it exists
+    fs.unlink("README.md", (err) => {
+        if (err && err.code == 'ENOENT') {
+            return
+        }
+    })
     // write data to readme
-    fs.appendFile('README.md', userData, (err) => { if (err) throw err })
+    fs.appendFile('README.md', answers, (err) => { if (err) throw err })
 }
 
-function appStart() {
-
+async function appStart() {
+    const data = await questionPrompt().then(answers => {
+        writeData('README.md', markdown(answers))
+    })
 }
 
 appStart()
